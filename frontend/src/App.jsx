@@ -1,12 +1,40 @@
+import { useState } from 'react'
 import './App.css'
 
 function App() {
+  const [selectedDriver, setSelectedDriver] = useState(null)
+
+  const drivers = [
+    {
+      name: 'Lando Norris',
+      team: 'McLaren',
+      number: '4',
+      color: '#ff8000',
+    },
+    {
+      name: 'Oscar Piastri',
+      team: 'McLaren',
+      number: '81',
+      color: '#ff8000',
+    },
+    {
+      name: 'Lewis Hamilton',
+      team: 'Ferrari',
+      number: '44',
+      color: '#e8002d',
+    },
+    {
+      name: 'Max Verstappen',
+      team: 'Red Bull Racing',
+      number: '1',
+      color: '#3671c6',
+    },
+  ]
+
   return (
     <div className="app">
       <header className="navbar">
-        <div className="logo">
-          F1 <span>STRATEGY LAB</span>
-        </div>
+        <div className="logo">F1 STRATEGY LAB</div>
 
         <nav>
           <a href="#simulator">Simulator</a>
@@ -16,143 +44,212 @@ function App() {
       </header>
 
       <main>
+        {/* HERO */}
+
         <section className="hero">
+          <div className="hero-background">
+            <div className="track-line track-line-1"></div>
+            <div className="track-line track-line-2"></div>
+            <div className="track-line track-line-3"></div>
+            <div className="hero-circle"></div>
+            <div className="hero-cross hero-cross-1">+</div>
+            <div className="hero-cross hero-cross-2">+</div>
+          </div>
+
           <div className="hero-content">
-            <p className="eyebrow">FORMULA 1 • STRATEGY ANALYSIS</p>
+            <span className="eyebrow">
+              FORMULA 1 · STRATEGY SIMULATION
+            </span>
 
             <h1>
-              Think like a
-              <span> race strategist.</span>
+              THINK LIKE A
+              <br />
+              <span>RACE STRATEGIST.</span>
             </h1>
 
-            <p className="hero-text">
-              Simulate race strategies, compare different scenarios
-              and explore how decisions can change the outcome of a race.
+            <p>
+              Explore race strategies, compare tyre choices and simulate
+              different scenarios before the lights go out.
             </p>
 
             <a href="#simulator" className="hero-button">
-              Start simulation
+              START SIMULATION
+              <span>→</span>
             </a>
           </div>
 
-          <div className="hero-card">
-            <div className="card-top">
-              <span>RACE SIMULATION</span>
-              <span className="status">● READY</span>
+          <div className="hero-data">
+            <div className="data-top">
+              <span>F1SL / 01</span>
+              <span>LIVE SIMULATION</span>
             </div>
 
-            <div className="race-name">
-              Italian Grand Prix
-            </div>
+            <div className="data-number">53</div>
 
-            <div className="race-info">
+            <div className="data-bottom">
               <div>
+                <span>RACE</span>
+                <strong>MONZA</strong>
+              </div>
+
+              <div>
+                <span>LAPS</span>
                 <strong>53</strong>
-                <small>LAPS</small>
               </div>
 
               <div>
-                <strong>3</strong>
-                <small>STINTS</small>
-              </div>
-
-              <div>
+                <span>SCENARIOS</span>
                 <strong>∞</strong>
-                <small>SCENARIOS</small>
               </div>
             </div>
+          </div>
 
-            <div className="strategy-line">
-              <span>SOFT</span>
-              <span>→</span>
-              <span>MEDIUM</span>
-              <span>→</span>
-              <span>MEDIUM</span>
-            </div>
+          <div className="scroll-indicator">
+            <span>SCROLL TO EXPLORE</span>
+            <div></div>
           </div>
         </section>
 
-        <section id="simulator" className="section">
+        {/* SIMULATOR */}
+
+        <section className="simulator" id="simulator">
           <div className="section-heading">
-            <p className="eyebrow">01 / SIMULATION</p>
-            <h2>Strategy Simulator</h2>
-            <p>
-              Configure a race and run a strategy simulation.
-            </p>
+            <span>01</span>
+
+            <div>
+              <p>SIMULATION SETUP</p>
+              <h2>Choose your driver</h2>
+            </div>
           </div>
 
-          <div className="simulator-grid">
-            <div className="panel">
-              <label htmlFor="race">Race</label>
+          <div className="driver-grid">
+            {drivers.map((driver) => (
+              <button
+                key={driver.number}
+                className={`driver-card ${
+                  selectedDriver?.number === driver.number ? 'selected' : ''
+                }`}
+                style={{
+                  '--team-color': driver.color,
+                }}
+                onClick={() => setSelectedDriver(driver)}
+              >
+                <span className="driver-number">{driver.number}</span>
 
-              <select id="race">
-                <option>Choose a race</option>
-                <option>Monaco Grand Prix</option>
-                <option>British Grand Prix</option>
+                <div className="driver-info">
+                  <p className="driver-team">{driver.team}</p>
+                  <h3>{driver.name}</h3>
+                </div>
+
+                <span className="driver-arrow">↗</span>
+              </button>
+            ))}
+          </div>
+
+          {selectedDriver && (
+            <div
+              className="selected-driver"
+              style={{
+                '--team-color': selectedDriver.color,
+              }}
+            >
+              <div>
+                <span>SELECTED DRIVER</span>
+                <h3>{selectedDriver.name}</h3>
+              </div>
+
+              <p>
+                {selectedDriver.team} · #{selectedDriver.number}
+              </p>
+            </div>
+          )}
+
+          <div className="setup-grid">
+            <div className="setup-block">
+              <label>RACE</label>
+
+              <select defaultValue="Italian Grand Prix">
                 <option>Italian Grand Prix</option>
+                <option>British Grand Prix</option>
+                <option>Belgian Grand Prix</option>
+                <option>Japanese Grand Prix</option>
               </select>
             </div>
 
-            <div className="panel">
-              <label htmlFor="driver">Driver</label>
+            <div className="setup-block">
+              <label>STARTING TYRE</label>
 
-              <select id="driver">
-                <option>Choose a driver</option>
-                <option>Lewis Hamilton</option>
-                <option>Lando Norris</option>
-                <option>Max Verstappen</option>
-                <option>George Russell</option>
+              <select defaultValue="Soft">
+                <option>Soft</option>
+                <option>Medium</option>
+                <option>Hard</option>
               </select>
             </div>
 
-            <div className="panel">
-              <label htmlFor="strategy">Strategy</label>
+            <div className="setup-block">
+              <label>STRATEGY</label>
 
-              <select id="strategy">
-                <option>Choose a strategy</option>
-                <option>One Stop</option>
-                <option>Two Stop</option>
-                <option>Three Stop</option>
+              <select defaultValue="S → M → M">
+                <option>S → M → M</option>
+                <option>M → H → M</option>
+                <option>S → M → H</option>
+                <option>M → M → H</option>
               </select>
             </div>
-
-            <button className="simulate-button">
-              Run simulation →
-            </button>
           </div>
+
+          <button className="simulate-button">
+            RUN SIMULATION <span>→</span>
+          </button>
         </section>
 
-        <section id="results" className="section results-section">
+        {/* RESULTS */}
+
+        <section className="results" id="results">
           <div className="section-heading">
-            <p className="eyebrow">02 / RESULTS</p>
-            <h2>Simulation Results</h2>
-            <p>
-              Your results will appear here after running a simulation.
-            </p>
+            <span>02</span>
+
+            <div>
+              <p>SIMULATION OUTPUT</p>
+              <h2>Race results</h2>
+            </div>
           </div>
 
-          <div className="empty-results">
-            <div className="empty-icon">◎</div>
+          <div className="results-empty">
+            <span>—</span>
             <h3>No simulation yet</h3>
+
             <p>
-              Configure your race strategy above and start the simulation.
+              Choose a driver and strategy above to see the simulated
+              race outcome.
             </p>
           </div>
         </section>
 
-        <section id="about" className="about">
-          <p className="eyebrow">F1 STRATEGY LAB</p>
-          <h2>Data. Strategy. Decisions.</h2>
-          <p>
-            A project for exploring Formula 1 race strategy through
-            simulation, data analysis and scenario comparison.
+        {/* ABOUT */}
+
+        <section className="about" id="about">
+          <div className="section-heading">
+            <span>03</span>
+
+            <div>
+              <p>ABOUT THE PROJECT</p>
+              <h2>F1 Strategy Lab</h2>
+            </div>
+          </div>
+
+          <p className="about-text">
+            F1 Strategy Lab is an experimental racing strategy simulator.
+            It combines Formula 1 race data, strategy modelling and
+            probabilistic simulation to explore how different decisions
+            can affect a race.
           </p>
         </section>
       </main>
 
       <footer>
         <span>F1 STRATEGY LAB</span>
-        <span>Built for strategy analysis</span>
+        <span>Built with React</span>
       </footer>
     </div>
   )
