@@ -3,7 +3,7 @@ from backend.app.api.dependencies import get_drivers_service
 # from backend.app.services import 
 
 router=APIRouter(
-    prefix='/drives',
+    prefix='/drivers',
     tags=['Drivers']
 )
 
