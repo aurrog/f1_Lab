@@ -34,5 +34,7 @@ class OpenF1Client:
 
     def get_drivers(self, session_key):
         params={
-            ''
+            'session_key': session_key,
         }
+        data=self.api_request('drivers', params)
+        return data
