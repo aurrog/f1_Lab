@@ -1,6 +1,119 @@
+import { useEffect, useState } from 'react'
 import './App.css'
 
+const API_BASE_URL = 'http://127.0.0.1:8000'
+
 function App() {
+  const [races, setRaces] = useState([])
+  const [drivers, setDrivers] = useState([])
+
+  const [selectedRace, setSelectedRace] = useState('')
+  const [selectedDriver, setSelectedDriver] = useState('')
+  const [selectedStrategy, setSelectedStrategy] = useState('')
+
+  const [loadingRaces, setLoadingRaces] = useState(true)
+  const [loadingDrivers, setLoadingDrivers] = useState(false)
+
+  const [racesError, setRacesError] = useState('')
+  const [driversError, setDriversError] = useState('')
+
+  const [simulationStarted, setSimulationStarted] = useState(false)
+
+  // Load races from backend
+  useEffect(() => {
+    async function loadRaces() {
+      try {
+        setLoadingRaces(true)
+        setRacesError('')
+
+        const response = await fetch(`${API_BASE_URL}/api/v1/races/`)
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`)
+        }
+
+        const data = await response.json()
+
+        setRaces(data)
+      } catch (error) {
+        console.error('Failed to load races:', error)
+        setRacesError('Could not load races from the backend.')
+      } finally {
+        setLoadingRaces(false)
+      }
+    }
+
+    loadRaces()
+  }, [])
+
+  // Load drivers when race changes
+  useEffect(() => {
+    if (!selectedRace) {
+      setDrivers([])
+      setSelectedDriver('')
+      return
+    }
+
+    async function loadDrivers() {
+      try {
+        setLoadingDrivers(true)
+        setDriversError('')
+        setSelectedDriver('')
+
+        const response = await fetch(
+          `${API_BASE_URL}/api/v1/drivers/?session_key=${selectedRace}`
+        )
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`)
+        }
+
+        const data = await response.json()
+
+        setDrivers(data)
+      } catch (error) {
+        console.error('Failed to load drivers:', error)
+        setDriversError('Could not load drivers for this race.')
+        setDrivers([])
+      } finally {
+        setLoadingDrivers(false)
+      }
+    }
+
+    loadDrivers()
+  }, [selectedRace])
+
+  function handleRaceChange(event) {
+    setSelectedRace(event.target.value)
+    setSimulationStarted(false)
+  }
+
+  function handleDriverChange(event) {
+    setSelectedDriver(event.target.value)
+    setSimulationStarted(false)
+  }
+
+  function handleStrategyChange(event) {
+    setSelectedStrategy(event.target.value)
+    setSimulationStarted(false)
+  }
+
+  function handleSimulation() {
+    if (!selectedRace || !selectedDriver || !selectedStrategy) {
+      return
+    }
+
+    setSimulationStarted(true)
+  }
+
+  const selectedRaceData = races.find(
+    (race) => String(race.session_key) === selectedRace
+  )
+
+  const selectedDriverData = drivers.find(
+    (driver) => String(driver.driver_number) === selectedDriver
+  )
+
   return (
     <div className="app">
       <header className="navbar">
@@ -42,17 +155,19 @@ function App() {
             </div>
 
             <div className="race-name">
-              Italian Grand Prix
+              {selectedRaceData
+                ? selectedRaceData.session_name
+                : 'Choose a race'}
             </div>
 
             <div className="race-info">
               <div>
-                <strong>53</strong>
+                <strong>—</strong>
                 <small>LAPS</small>
               </div>
 
               <div>
-                <strong>3</strong>
+                <strong>—</strong>
                 <small>STINTS</small>
               </div>
 
@@ -85,64 +200,185 @@ function App() {
             <div className="panel">
               <label htmlFor="race">Race</label>
 
-              <select id="race">
-                <option>Choose a race</option>
-                <option>Monaco Grand Prix</option>
-                <option>British Grand Prix</option>
-                <option>Italian Grand Prix</option>
+              <select
+                id="race"
+                value={selectedRace}
+                onChange={handleRaceChange}
+                disabled={loadingRaces}
+              >
+                <option value="">
+                  {loadingRaces ? 'Loading races...' : 'Choose a race'}
+                </option>
+
+                {races.map((race) => (
+                  <option
+                    key={race.session_key}
+                    value={race.session_key}
+                  >
+                    {race.session_name} — {race.location}
+                  </option>
+                ))}
               </select>
+
+              {racesError && (
+                <p className="api-error">
+                  {racesError}
+                </p>
+              )}
             </div>
 
             <div className="panel">
               <label htmlFor="driver">Driver</label>
 
-              <select id="driver">
-                <option>Choose a driver</option>
-                <option>Lewis Hamilton</option>
-                <option>Lando Norris</option>
-                <option>Max Verstappen</option>
-                <option>George Russell</option>
+              <select
+                id="driver"
+                value={selectedDriver}
+                onChange={handleDriverChange}
+                disabled={!selectedRace || loadingDrivers}
+              >
+                <option value="">
+                  {!selectedRace
+                    ? 'Choose a race first'
+                    : loadingDrivers
+                      ? 'Loading drivers...'
+                      : 'Choose a driver'}
+                </option>
+
+                {drivers.map((driver) => (
+                  <option
+                    key={driver.driver_number}
+                    value={driver.driver_number}
+                  >
+                    #{driver.driver_number} {driver.full_name} —{' '}
+                    {driver.team_name}
+                  </option>
+                ))}
               </select>
+
+              {driversError && (
+                <p className="api-error">
+                  {driversError}
+                </p>
+              )}
             </div>
 
             <div className="panel">
               <label htmlFor="strategy">Strategy</label>
 
-              <select id="strategy">
-                <option>Choose a strategy</option>
-                <option>One Stop</option>
-                <option>Two Stop</option>
-                <option>Three Stop</option>
+              <select
+                id="strategy"
+                value={selectedStrategy}
+                onChange={handleStrategyChange}
+              >
+                <option value="">Choose a strategy</option>
+                <option value="one-stop">One Stop</option>
+                <option value="two-stop">Two Stop</option>
+                <option value="three-stop">Three Stop</option>
               </select>
             </div>
 
-            <button className="simulate-button">
+            <button
+              className="simulate-button"
+              onClick={handleSimulation}
+              disabled={
+                !selectedRace ||
+                !selectedDriver ||
+                !selectedStrategy
+              }
+            >
               Run simulation →
             </button>
           </div>
+
+          {selectedDriverData && (
+            <div className="selected-driver-preview">
+              <div
+                className="driver-color"
+                style={{
+                  backgroundColor: `#${selectedDriverData.team_colour}`,
+                }}
+              />
+
+              <div>
+                <span className="selected-driver-label">
+                  SELECTED DRIVER
+                </span>
+
+                <strong>
+                  #{selectedDriverData.driver_number}{' '}
+                  {selectedDriverData.full_name}
+                </strong>
+
+                <span>
+                  {selectedDriverData.team_name}
+                </span>
+              </div>
+            </div>
+          )}
         </section>
 
         <section id="results" className="section results-section">
           <div className="section-heading">
             <p className="eyebrow">02 / RESULTS</p>
             <h2>Simulation Results</h2>
+
             <p>
-              Your results will appear here after running a simulation.
+              {simulationStarted
+                ? 'Simulation configuration is ready.'
+                : 'Your results will appear here after running a simulation.'}
             </p>
           </div>
 
-          <div className="empty-results">
-            <div className="empty-icon">◎</div>
-            <h3>No simulation yet</h3>
-            <p>
-              Configure your race strategy above and start the simulation.
-            </p>
-          </div>
+          {simulationStarted ? (
+            <div className="simulation-summary">
+              <div>
+                <span>RACE</span>
+                <strong>
+                  {selectedRaceData?.session_name}
+                </strong>
+              </div>
+
+              <div>
+                <span>DRIVER</span>
+                <strong>
+                  #{selectedDriverData?.driver_number}{' '}
+                  {selectedDriverData?.full_name}
+                </strong>
+              </div>
+
+              <div>
+                <span>STRATEGY</span>
+                <strong>
+                  {selectedStrategy === 'one-stop'
+                    ? 'One Stop'
+                    : selectedStrategy === 'two-stop'
+                      ? 'Two Stop'
+                      : 'Three Stop'}
+                </strong>
+              </div>
+
+              <p className="simulation-note">
+                Backend simulation results will be connected here next.
+              </p>
+            </div>
+          ) : (
+            <div className="empty-results">
+              <div className="empty-icon">◎</div>
+
+              <h3>No simulation yet</h3>
+
+              <p>
+                Configure your race strategy above and start the simulation.
+              </p>
+            </div>
+          )}
         </section>
 
         <section id="about" className="about">
           <p className="eyebrow">F1 STRATEGY LAB</p>
+
           <h2>Data. Strategy. Decisions.</h2>
+
           <p>
             A project for exploring Formula 1 race strategy through
             simulation, data analysis and scenario comparison.
