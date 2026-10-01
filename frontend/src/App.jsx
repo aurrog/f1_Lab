@@ -19,7 +19,6 @@ function App() {
 
   const [simulationStarted, setSimulationStarted] = useState(false)
 
-  // Load races from backend
   useEffect(() => {
     async function loadRaces() {
       try {
@@ -46,7 +45,6 @@ function App() {
     loadRaces()
   }, [])
 
-  // Load drivers when race changes
   useEffect(() => {
     if (!selectedRace) {
       setDrivers([])
