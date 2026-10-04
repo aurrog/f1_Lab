@@ -1,15 +1,15 @@
-from backend.app.integrations.openf1 import client
+from backend.app.integrations.contrant import F1Client
+from backend.storage.contracts import BaseRepository
+from backend.app.core.models import RepositoryQuery
+
 
 
 class DriverService:
-    def __init__(self, config):
-        self.data_client=client.OpenF1Client(
-            base_url=config.openf1_api_url,
-            timeout_seconds=config.timeout_seconds,
-        )
+    def __init__(self, data_client:F1Client, repository: BaseRepository):
+        self.data_client=data_client
 
-    def get_drivers(self, session_key):
+    def get_drivers(self, query: RepositoryQuery):
         # TODO in-cache condition and in-prefilled condition
         
-        return self.data_client.get_drivers(session_key)
+        return self.data_client.get_drivers(query.session_key)
     

@@ -1,14 +1,28 @@
-from backend.app.integrations.openf1 import client
+from backend.app.core.models import RepositoryQuery
+from backend.app.integrations.contrant import F1Client
+from backend.storage.contracts import BaseRepository
+
 
 
 class SeasonService():
-    def __init__(self, config):
-        self.data_client=client.OpenF1Client(
-            base_url=config.openf1_api_url,
-            timeout_seconds=config.timeout_seconds,
-        )
+    def __init__(self, data_client: F1Client, repository: BaseRepository):
+        self.data_client=data_client
+        self.file_repository=repository
 
-    def get_races(self, year=2026):
+
+    def get_races(self, query: RepositoryQuery):
         # TODO: in-cache condition
+        # repository.make_id(params)
 
-        return self.data_client.get_races(year)
+        cached_data = self.file_repository.get(query)
+
+        if cached_data is not None:
+            print('FROM_CACHe')
+            return cached_data
+
+        else: 
+            data_loaded=self.data_client.get_races(query.year)
+
+            self.file_repository.write(query.get_id(), data_loaded)
+
+            return self.data_client.get_races(query.year)

@@ -9,6 +9,7 @@ class OpenF1Client:
         self.timeout_seconds=timeout_seconds
 
     def api_request(self, request_name,params):
+        return {'message': 'session is not avialiable now'}
         response=requests.get(
             f'{self.BASE_URL}/{request_name}',
             params=params,
