@@ -25,4 +25,4 @@ class SeasonService():
 
             self.file_repository.write(query.get_id(), data_loaded)
 
-            return self.data_client.get_races(query.year)
+            return data_loaded

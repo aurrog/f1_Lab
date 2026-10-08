@@ -1,5 +1,11 @@
 from typing import Protocol
+from dataclasses import dataclass
 from pathlib import Path
+
+
+@dataclass
+class RepositoryFileLoadError:
+    message:str
 
 
 class BaseRepository(Protocol):

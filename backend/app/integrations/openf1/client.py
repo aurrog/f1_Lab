@@ -9,7 +9,7 @@ class OpenF1Client:
         self.timeout_seconds=timeout_seconds
 
     def api_request(self, request_name,params):
-        return {'message': 'session is not avialiable now'}
+        # return {'message': 'session is not avialiable now'}
         response=requests.get(
             f'{self.BASE_URL}/{request_name}',
             params=params,
@@ -28,9 +28,6 @@ class OpenF1Client:
         data=self.api_request('sessions', params)
 
         return data
-
-        # races['date_start']=pd.to_datetime(races['date_start']).dt.tz_localize(None)
-        # races['date_end']=pd.to_datetime(races['date_end']).dt.tz_localize(None)
 
 
     def get_drivers(self, session_key):
