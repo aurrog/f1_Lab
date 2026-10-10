@@ -10,6 +10,7 @@ dependencies = [
     "requests",
     "pydantic-settings",
     "pytest>=9.1.1",
+    "httpx2>=2.13.1",
 ]
 
 [dependency-groups]

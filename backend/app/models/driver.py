@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-class Driver:
+class Driver(BaseModel):
     session_key: int
     driver_number: int
 
