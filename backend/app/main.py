@@ -4,7 +4,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from backend.app.api import router
 from backend.app.core import config
 from backend.app.core import services
+from backend.app.core.logging_config import setup_logging
 
+
+
+setup_logging()
 
 app = FastAPI(title="F1 lab")
 
@@ -27,3 +31,4 @@ settings = config.get_settings()
 app.state.services = services.build_services(settings)
 
 app.include_router(router.router, prefix="/api/v1")
+

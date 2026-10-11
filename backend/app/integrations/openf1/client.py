@@ -1,6 +1,10 @@
 import requests
+import logging
+import time
 # import pandas as pd
 
+
+logger = logging.getLogger(__name__)
 
 
 class OpenF1Client:
@@ -9,15 +13,33 @@ class OpenF1Client:
         self.timeout_seconds=timeout_seconds
 
     def api_request(self, request_name,params):
-        # return {'message': 'session is not avialiable now'}
-        response=requests.get(
-            f'{self.BASE_URL}/{request_name}',
-            params=params,
-            timeout=self.timeout_seconds,
+        url=f'{self.BASE_URL}/{request_name}'
+        logger.info('Openf1 request started: endpoint=%s', request_name)
+
+        start=time.perf_counter()
+
+        try:
+            response=requests.get(
+                url,
+                params=params,
+                timeout=self.timeout_seconds,
+            )
+            response.raise_for_status()
+
+            data=response.json()
+        except requests.exceptions.RequestException:
+            logger.exception('Openf1 request failed: endpoint=%s', request_name)
+            raise
+
+        elapsed=time.perf_counter()-start
+        
+        logger.info(
+            "OpenF1 request completed: endpoint=%s status=%s duration=%.3fs",
+            request_name,
+            response.status_code,
+            elapsed,
         )
 
-        data=response.json()
-        # data_df=pd.DataFrame(data)
         return data
 
     def get_races(self, year):

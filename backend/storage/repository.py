@@ -1,10 +1,11 @@
+import logging
 from pathlib import Path
 from backend.app.core.models import RepositoryQuery
 from backend.app.db.connection import DataBase
 import json
 
-# def get_id(params):
-#     normalized=[]
+logger=logging.getLogger(__name__)
+
 
 
 class Repository:
@@ -27,7 +28,7 @@ class Repository:
         try:
             return self.get_from_storage(file_path)
         except (FileNotFoundError, json.JSONDecodeError):
-            # logger.warning("Непригодный кеш: %s", file_path, exc_info=True)
+            logger.warning("Непригодный кеш: %s", file_path, exc_info=True)
             return None
 
 
