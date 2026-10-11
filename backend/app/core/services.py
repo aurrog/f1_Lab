@@ -31,6 +31,9 @@ class Services:
 
 
 def build_services(settings: Settings) -> Services:
+    settings.database_url.parent.mkdir(parents=True, exist_ok=True)
+    settings.cache_data_dir.mkdir(parents=True, exist_ok=True)
+
     database=SQLite3DataBase(settings.database_url)
     init_schema(database)
 
