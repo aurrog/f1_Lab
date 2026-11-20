@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from backend.app.services.season_service import SeasonService
+from backend.app.services.races_service import RacesService
 from backend.app.services.drivers_service import DriverService
 from backend.app.services.laps_service import LapService
 
@@ -27,7 +27,7 @@ def init_schema(database: DataBase):
 
 @dataclass(frozen=True)
 class Services:
-    season_service: SeasonService
+    races_service: RacesService
     driver_service: DriverService
     laps_service: LapService
 
@@ -40,7 +40,7 @@ def build_services(settings: Settings) -> Services:
     repository=Repository(database, settings.cache_data_dir)
 
     return Services(
-        season_service=SeasonService(data_client, repository),
+        races_service=RacesService(data_client, repository),
         driver_service=DriverService(data_client, repository),
         laps_service=LapService(data_client, repository),
     )

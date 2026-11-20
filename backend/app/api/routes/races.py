@@ -2,10 +2,10 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, Query
 
-from backend.app.api.dependencies import get_season_service
+from backend.app.api.dependencies import get_races_service
 from backend.app.core.models import RepositoryQuery
 from backend.app.models.queries import RacesQuery
-from backend.app.services.season_service import SeasonService
+from backend.app.services.races_service import RacesService
 
 
 router=APIRouter(
@@ -15,6 +15,6 @@ router=APIRouter(
 
 
 @router.get('/', summary='Получить список гонок')
-def get_races(query: Annotated[RacesQuery, Query()], season_service:Annotated[SeasonService, Depends(get_season_service)]):
-    return season_service.get_races(query)
+def get_races(query: Annotated[RacesQuery, Query()], races_service:Annotated[RacesService, Depends(get_races_service)]):
+    return races_service.get_races(query)
 

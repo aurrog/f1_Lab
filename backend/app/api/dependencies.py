@@ -1,13 +1,13 @@
 from fastapi import Request
 
 from backend.app.core.config import get_settings
-from backend.app.services.season_service import SeasonService
+from backend.app.services.races_service import RacesService
 from backend.app.services.drivers_service import DriverService
 from backend.app.services.laps_service import LapService
 
 
-def get_season_service(request: Request) -> SeasonService:
-    return request.app.state.services.season_service
+def get_races_service(request: Request) -> RacesService:
+    return request.app.state.services.races_service
 
 
 def get_drivers_service(request: Request) -> DriverService:

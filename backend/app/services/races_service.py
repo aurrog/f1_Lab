@@ -9,7 +9,7 @@ from backend.storage.contracts import BaseRepository
 logger=logging.getLogger(__name__)
 
 
-class SeasonService():
+class RacesService():
     def __init__(self, data_client: F1Client, repository: BaseRepository):
         self.data_client=data_client
         self.file_repository=repository
