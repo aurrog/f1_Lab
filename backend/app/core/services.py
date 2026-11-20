@@ -2,6 +2,7 @@ from dataclasses import dataclass
 
 from backend.app.services.season_service import SeasonService
 from backend.app.services.drivers_service import DriverService
+from backend.app.services.laps_service import LapService
 
 from backend.app.integrations.openf1.client import OpenF1Client
 from backend.app.db.connection import DataBase
@@ -28,6 +29,7 @@ def init_schema(database: DataBase):
 class Services:
     season_service: SeasonService
     driver_service: DriverService
+    laps_service: LapService
 
 
 def build_services(settings: Settings) -> Services:
@@ -40,5 +42,6 @@ def build_services(settings: Settings) -> Services:
     return Services(
         season_service=SeasonService(data_client, repository),
         driver_service=DriverService(data_client, repository),
+        laps_service=LapService(data_client, repository),
     )
 

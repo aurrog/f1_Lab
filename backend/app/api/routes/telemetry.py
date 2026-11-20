@@ -2,7 +2,7 @@ from fastapi import APIRouter
 
 
 router=APIRouter(
-    prefix=['/telemetry'],
+    prefix='/telemetry',
     tags=['Telemetry']
 )
 

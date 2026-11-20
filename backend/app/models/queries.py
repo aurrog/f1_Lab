@@ -7,7 +7,10 @@ class RacesQuery(BaseModel):
 class DriversQuery(BaseModel):
     session_key: int = Field(gt=0)
 
+class LapsQuery(BaseModel):
+    session_key: int = Field(gt=0)
+    driver_number: int = Field(gt=0)
+
 class TelemetryQuery(BaseModel):
     session_key: int = Field(gt=0)
     driver_number: int = Field(gt=0)
-    

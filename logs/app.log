@@ -23,3 +23,25 @@
 2026-10-11 22:07:51,410 | DEBUG | urllib3.connectionpool | Starting new HTTPS connection (1): api.openf1.org:443
 2026-10-11 22:07:51,727 | DEBUG | urllib3.connectionpool | https://api.openf1.org:443 "GET /v1/drivers?session_key=11245 HTTP/1.1" 200 None
 2026-10-11 22:07:51,728 | INFO | backend.app.integrations.openf1.client | OpenF1 request completed: endpoint=drivers status=200 duration=0.320s
+2026-11-20 12:50:35,258 | INFO | backend.app.services.season_service | Getting races: year=2026
+2026-11-20 12:50:35,259 | INFO | backend.app.services.season_service | Cache miss: year=2026
+2026-11-20 12:50:35,259 | INFO | backend.app.integrations.openf1.client | Openf1 request started: endpoint=sessions
+2026-11-20 12:50:35,264 | DEBUG | urllib3.connectionpool | Starting new HTTPS connection (1): api.openf1.org:443
+2026-11-20 12:50:35,843 | DEBUG | urllib3.connectionpool | https://api.openf1.org:443 "GET /v1/sessions?year=2026&session_name=Race HTTP/1.1" 200 None
+2026-11-20 12:50:35,844 | INFO | backend.app.integrations.openf1.client | OpenF1 request completed: endpoint=sessions status=200 duration=0.586s
+2026-11-20 12:50:59,859 | INFO | backend.app.services.drivers_service | Getting drivers: session_key=11261
+2026-11-20 12:50:59,860 | INFO | backend.app.services.drivers_service | Cache miss: session_key=11261
+2026-11-20 12:50:59,860 | INFO | backend.app.integrations.openf1.client | Openf1 request started: endpoint=drivers
+2026-11-20 12:50:59,860 | DEBUG | urllib3.connectionpool | Starting new HTTPS connection (1): api.openf1.org:443
+2026-11-20 12:51:00,299 | DEBUG | urllib3.connectionpool | https://api.openf1.org:443 "GET /v1/drivers?session_key=11261 HTTP/1.1" 200 None
+2026-11-20 12:51:00,300 | INFO | backend.app.integrations.openf1.client | OpenF1 request completed: endpoint=drivers status=200 duration=0.440s
+2026-11-20 13:32:18,701 | INFO | backend.app.services.season_service | Getting races: year=2026
+2026-11-20 13:32:18,703 | DEBUG | backend.app.services.season_service | Cache hit: year=2026
+2026-11-20 13:32:31,940 | INFO | backend.app.services.laps_service | Getting laps: session_key=11234 driver_number=12
+2026-11-20 13:32:31,940 | INFO | backend.app.services.laps_service | Cache miss: session_key=11234 driver_number=12
+2026-11-20 13:32:31,940 | INFO | backend.app.integrations.openf1.client | Openf1 request started: endpoint=laps
+2026-11-20 13:32:31,949 | DEBUG | urllib3.connectionpool | Starting new HTTPS connection (1): api.openf1.org:443
+2026-11-20 13:32:48,750 | DEBUG | urllib3.connectionpool | https://api.openf1.org:443 "GET /v1/laps?session_key=11234&driver_number=12 HTTP/1.1" 200 None
+2026-11-20 13:32:48,752 | INFO | backend.app.integrations.openf1.client | OpenF1 request completed: endpoint=laps status=200 duration=16.812s
+2026-11-20 13:36:42,944 | INFO | backend.app.services.laps_service | Getting laps: session_key=11234 driver_number=12
+2026-11-20 13:36:42,950 | DEBUG | backend.app.services.laps_service | Cache hit: session_key=11234 driver_number=12

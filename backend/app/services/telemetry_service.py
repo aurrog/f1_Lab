@@ -6,3 +6,6 @@ class TelemetryService:
     def __init__(self, data_client:F1Client, repository: BaseRepository):
         self.data_client=data_client
         self.repository=repository
+
+    def get_telemetry(self):
+        pass

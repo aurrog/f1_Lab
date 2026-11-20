@@ -58,3 +58,10 @@ class OpenF1Client:
         }
         data=self.api_request('drivers', params)
         return data
+
+    def get_laps(self, session_key, driver_number):
+        params={
+            'session_key': session_key,
+            'driver_number': driver_number,
+        }
+        return self.api_request('laps', params)
