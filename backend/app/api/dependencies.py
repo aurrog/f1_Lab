@@ -1,19 +1,15 @@
-from functools import lru_cache
+from fastapi import Request
 
 from backend.app.core.config import get_settings
 from backend.app.services.season_service import SeasonService
 from backend.app.services.drivers_service import DriverService
 
 
-@lru_cache
-def get_season_service() -> SeasonService:
-    settings=get_settings()
-    return SeasonService(settings)
+def get_season_service(request: Request) -> SeasonService:
+    return request.app.state.services.season_service
 
 
-@lru_cache
-def get_drivers_service() -> DriverService:
-    settings=get_settings()
-    return DriverService(settings)
+def get_drivers_service(request: Request) -> DriverService:
+    return request.app.state.services.driver_service
 
 

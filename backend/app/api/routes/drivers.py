@@ -1,16 +1,19 @@
-from fastapi import APIRouter, Depends
+from typing import Annotated
+
+from fastapi import APIRouter, Depends, Query
+
 from backend.app.api.dependencies import get_drivers_service
-# from backend.app.services import 
+from backend.app.services.drivers_service import DriverService
+from backend.app.models.queries import DriversQuery
+
 
 router=APIRouter(
-    prefix='/drives',
+    prefix='/drivers',
     tags=['Drivers']
 )
 
 
 @router.get('/', summary='Получить список пилотов')
-def get_drivers(session_key:int, drivers_service=Depends(get_drivers_service)):
+def get_drivers(query:Annotated[DriversQuery, Query()], drivers_service: Annotated[DriverService, Depends(get_drivers_service)]):
 
-    return drivers_service.get_drivers(session_key)
-
-
+    return drivers_service.get_drivers(query)

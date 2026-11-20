@@ -1,6 +1,10 @@
 import requests
-import pandas as pd
+import logging
+import time
+# import pandas as pd
 
+
+logger = logging.getLogger(__name__)
 
 
 class OpenF1Client:
@@ -9,14 +13,33 @@ class OpenF1Client:
         self.timeout_seconds=timeout_seconds
 
     def api_request(self, request_name,params):
-        response=requests.get(
-            f'{self.BASE_URL}/{request_name}',
-            params=params,
-            timeout=self.timeout_seconds,
+        url=f'{self.BASE_URL}/{request_name}'
+        logger.info('Openf1 request started: endpoint=%s', request_name)
+
+        start=time.perf_counter()
+
+        try:
+            response=requests.get(
+                url,
+                params=params,
+                timeout=self.timeout_seconds,
+            )
+            response.raise_for_status()
+
+            data=response.json()
+        except requests.exceptions.RequestException:
+            logger.exception('Openf1 request failed: endpoint=%s', request_name)
+            raise
+
+        elapsed=time.perf_counter()-start
+        
+        logger.info(
+            "OpenF1 request completed: endpoint=%s status=%s duration=%.3fs",
+            request_name,
+            response.status_code,
+            elapsed,
         )
 
-        data=response.json()
-        # data_df=pd.DataFrame(data)
         return data
 
     def get_races(self, year):
@@ -27,9 +50,6 @@ class OpenF1Client:
         data=self.api_request('sessions', params)
 
         return data
-
-        # races['date_start']=pd.to_datetime(races['date_start']).dt.tz_localize(None)
-        # races['date_end']=pd.to_datetime(races['date_end']).dt.tz_localize(None)
 
 
     def get_drivers(self, session_key):
